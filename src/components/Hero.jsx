@@ -1,18 +1,21 @@
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Rocket, Download, Sparkles } from 'lucide-react'
+import { Rocket, Download, Sparkles, Play } from 'lucide-react'
 import Spline from '@splinetool/react-spline'
 
 const GP_LINK = 'https://play.google.com/store/apps/details?id=com.sheikhpublishinginc.calfinity'
 
 export default function Hero() {
+  const particles = useMemo(() => Array.from({ length: 18 }, (_, i) => i), [])
+
   return (
-    <section className="relative w-full h-[92vh] min-h-[720px] overflow-hidden bg-[#04060a]">
+    <section id="hero" className="relative w-full h-[92vh] min-h-[720px] overflow-hidden bg-[#04060a]">
       {/* Immersive 3D Background */}
       <div className="absolute inset-0">
         <Spline scene={"https://prod.spline.design/7m4PRZ7kg6K1jPfF/scene.splinecode"} style={{ width: '100%', height: '100%' }} />
       </div>
 
-      {/* Cosmic gradients + holographic ribbons (non-blocking) */}
+      {/* Cosmic gradients + holographic aurora (non-blocking) */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 -left-24 h-[620px] w-[620px] rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-[520px] w-[520px] rounded-full bg-indigo-500/20 blur-3xl" />
@@ -22,6 +25,17 @@ export default function Hero() {
           transition={{ duration: 1.2, ease: 'easeOut' }}
           className="absolute left-1/2 top-1/4 h-72 w-[140%] -translate-x-1/2 rotate-[-8deg] rounded-[80px] bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-indigo-500/20 blur-2xl"
         />
+        {/* Floating spark particles */}
+        {particles.map((p) => (
+          <motion.span
+            key={p}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: [0.2, 0.8, 0.2], y: [0, -8, 0] }}
+            transition={{ duration: 3 + (p % 5), repeat: Infinity, delay: p * 0.12, ease: 'easeInOut' }}
+            className="absolute h-1.5 w-1.5 rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-300 shadow-[0_0_12px_rgba(56,189,248,0.6)]"
+            style={{ left: `${(p * 53) % 100}%`, top: `${(p * 37) % 100}%` }}
+          />
+        ))}
       </div>
 
       {/* Content */}
@@ -72,10 +86,34 @@ export default function Hero() {
               Pre‑register on Google Play
             </a>
 
-            <div className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 backdrop-blur">
-              <Sparkles className="h-4 w-4 text-fuchsia-300" />
-              AI food vision • Live macros • Privacy‑first
-            </div>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 backdrop-blur transition hover:bg-white/10"
+              onClick={() => {
+                const features = document.getElementById('features')
+                if (features) features.scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              <Play className="h-4 w-4 text-fuchsia-300" />
+              See how it works
+            </button>
+          </motion.div>
+
+          {/* Scroll hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            className="mt-10 flex items-center gap-3 text-white/60"
+          >
+            <span className="h-6 w-3 rounded-full border border-white/30 p-0.5">
+              <motion.span
+                className="block h-1.5 w-1.5 rounded-full bg-white"
+                animate={{ y: [0, 8, 0], opacity: [0.6, 1, 0.6] }}
+                transition={{ repeat: Infinity, duration: 1.8 }}
+              />
+            </span>
+            Scroll to explore the cosmos
           </motion.div>
         </div>
       </div>
